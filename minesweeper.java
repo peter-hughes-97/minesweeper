@@ -25,27 +25,21 @@ public class minesweeper extends JFrame {
    
     // The value assigned to cells marked as mines. 10 works
     // because no cell will have more than 8 neighbouring mines.
-    private static final int MINE = 10;
-    // The size in pixels for the frame.
-    private static final int SIZE = 500;
+    public static final int MINE = 10;
 
     // The number of mines at generated is the grid size * this constant
-    private static double POPULATION_CONSTANT = 3;
+    private static double POPULATION_CONSTANT = 2;
 
     // This fixed amount of memory is to avoid repeatedly declaring
     // new arrays every time a cell's neighbours are to be retrieved.
-    private static Cell[] reusableStorage = new Cell[8];
-
-    private int gridSize;
+    public Cell[] reusableStorage = new Cell[8];
     
-    int mineNum;
+    static Cell[][] cells;
+    
+    public int gridSize = 10;
 
-    private Cell[][] cells;
-
-    private JLabel Counter;
-    private JLabel clock;
-    private JFrame  frame;
-    private JButton reset;
+    
+    public int mineNum;
     
     //Timer timer = new Timer();
     //timer.setInitialDelay(pause);
@@ -60,191 +54,19 @@ public class minesweeper extends JFrame {
           }
        });*/
     
-    private final ActionListener actionListener = actionEvent -> {
+    public final ActionListener actionListener = actionEvent -> {
         Object source = actionEvent.getSource();
-        if (source == reset) {
-            createMines();
-            mineNum = 0;
-        } else {
-            handleCell((Cell) source);
-        }
+        handleCell((Cell) source);
     };
-
-    private class Cell extends JButton {
-        private final int row;
-        private final int col;
-        private       int value;
-
-        Cell(final int row, final int col,
-             final ActionListener actionListener) {
-            this.row = row;
-            this.col = col;
-            addActionListener(actionListener);
-            setText("");
-        }
-
-        int getValue() {
-            return value;
-        }
-
-        void setValue(int value) {
-            this.value = value;
-        }
-
-        boolean isAMine() {
-            return value == MINE;
-        }
-
-        void reset() {
-            setValue(0);
-            setEnabled(true);
-            setText("");
-            mineNum = 0;
-        }
-
-        void reveal() {
-            setEnabled(false);
-            setText(isAMine() ? "X" : String.valueOf(value));
-        }
-
-        void updateNeighbourCount() {
-            getNeighbours(reusableStorage);
-            for (Cell neighbour : reusableStorage) {
-                if (neighbour == null) {
-                    break;
-                }
-                if (neighbour.isAMine()) {
-                    value++;
-                }
-            }
-        }
-
-        void getNeighbours(final Cell[] container) {
-            // Empty all elements first
-            for (int i = 0; i < reusableStorage.length; i++) {
-                reusableStorage[i] = null;
-            }
-
-            int index = 0;
-
-            for (int rowOffset = -1; rowOffset <= 1; rowOffset++) {
-                for (int colOffset = -1; colOffset <= 1; colOffset++) {
-                    // Make sure that we don't count ourselves
-                    if (rowOffset == 0 && colOffset == 0) {
-                        continue;
-                    }
-                    int rowValue = row + rowOffset;
-                    int colValue = col + colOffset;
-
-                    if (rowValue < 0 || rowValue >= gridSize
-                        || colValue < 0 || colValue >= gridSize) {
-                        continue;
-                    }
-
-                    container[index++] = cells[rowValue][colValue];
-                }
-            }
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj) return true;
-            if (obj == null || getClass() != obj.getClass())
-                return false;
-            Cell cell = (Cell) obj;
-            return row == cell.row &&
-                   col == cell.col;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(row, col);
-        }
-    }
-
-    private minesweeper(final int gridSize) {
-        this.gridSize = gridSize;
-        cells = new Cell[gridSize][gridSize];
-
-        frame = new JFrame("Minesweeper");
-        frame.setSize(SIZE, SIZE);
-        frame.setLayout(new BorderLayout());
-
-        initializeButtonPanel();
-        initializeGrid();
-        createMenuBar();
-
-        frame.setLocationRelativeTo(null);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setVisible(true);
-    }
     
-    private void createMenuBar() {
-
-        var menuBar = new JMenuBar();
-
-        var fileMenu = new JMenu("File");
-        fileMenu.setMnemonic(KeyEvent.VK_F);
-
-        var eMenuItem = new JMenuItem("Exit");
-        eMenuItem.setToolTipText("Exit application");
-        eMenuItem.addActionListener((event) -> System.exit(0));
-        
-        
-        var MineSetting = new JMenu("Mines");
-        MineSetting.setMnemonic(KeyEvent.VK_M);
-        
-        var tenMenuItem = new JMenuItem("10 Mines");
-        tenMenuItem.addActionListener(mineReset(2));
-        
-        var twMenuItem = new JMenuItem("20 Mines");
-        tenMenuItem.addActionListener(mineReset(2));
-        
-        var thMenuItem = new JMenuItem("30 Mines");
-        tenMenuItem.addActionListener(mineReset(2));
-
-        fileMenu.add(eMenuItem);
-        MineSetting.add(tenMenuItem);
-        MineSetting.add(twMenuItem);
-        MineSetting.add(thMenuItem);
-        menuBar.add(fileMenu);
-        menuBar.add(MineSetting);
-
-        frame.setJMenuBar(menuBar);
-    }
-
-    private void initializeButtonPanel() {
-        JPanel buttonPanel = new JPanel();
-
-        Counter = new JLabel (String.valueOf(mineNum));
-        reset = new JButton("Reset");
-        clock = new JLabel(String.valueOf(0));
-
-        reset.addActionListener(actionListener);
-
-        buttonPanel.add(Counter);
-        buttonPanel.add(reset);
-        buttonPanel.add(clock);
-        frame.add(buttonPanel, BorderLayout.SOUTH);
-    }
-
-    private void initializeGrid() {
-      Color bg = new Color(74, 216, 255);
-        Container grid = new Container();
-        grid.setLayout(new GridLayout(gridSize, gridSize));
-
-        for (int row = 0; row < gridSize; row++) {
-            for (int col = 0; col < gridSize; col++) {
-                cells[row][col] = new Cell(row, col, actionListener);
-                grid.add(cells[row][col]);
-                cells[row][col].setBackground(bg);
-            }
-        }
+    public void reset() {
         createMines();
-        frame.add(grid, BorderLayout.CENTER);
+            mineNum = 0;
     }
+
     
-    private final ActionListener mineReset(int n)  {
+    
+    public final ActionListener mineReset(int n)  {
         POPULATION_CONSTANT = n;
         mineNum = 0;
         createMines();
@@ -259,7 +81,7 @@ public class minesweeper extends JFrame {
         }
     }
 
-    private void createMines() {
+    public void createMines() {
         resetAllCells();
 
         final int    mineCount = (int) POPULATION_CONSTANT * gridSize;
@@ -280,7 +102,7 @@ public class minesweeper extends JFrame {
             int col    = choice % gridSize;
             cells[row][col].setValue(MINE);
             mineNum++;
-            Counter.setText(String.valueOf(mineNum));
+            //Counter.setText(String.valueOf(mineNum));
             positions.remove(choice);
         }
 
@@ -298,7 +120,8 @@ public class minesweeper extends JFrame {
       if (cell.isAMine()) {
          cell.setForeground(Color.RED);
          cell.reveal();
-         revealBoardAndDisplay("Game Over");
+         view gameOverVar = new view();
+         gameOverVar.gameOver("Game Over");
          return;
       }
       if (cell.getValue() == 0) {
@@ -310,22 +133,37 @@ public class minesweeper extends JFrame {
          }
          checkForWin();
     }
+    
+    private void checkForWin() {
+        boolean won = true;
+        outer:
+        for (Cell[] cellRow : cells) {
+            for (Cell cell : cellRow) {
+                if (!cell.isAMine() && cell.isEnabled()) {
+                    won = false;
+                    break outer;
+                }
+            }
+        }
 
-    private void revealBoardAndDisplay(String message) {
+        if (won) {
+            view winVar = new view();
+            winVar.win();
+        }
+     }
+     
+       public void revealBoardAndDisplay(String message) {
         mineNum = 0;
         for (int row = 0; row < gridSize; row++) {
             for (int col = 0; col < gridSize; col++) {
                 cells[row][col].reveal();
             }
         }
-
-        JOptionPane.showMessageDialog(
-                frame, message, "Game Over",
-                JOptionPane.ERROR_MESSAGE
-        );
-
+        view gameOverVar = new view();
+        gameOverVar.gameOver(message);
         createMines();
     }
+
 
     private void cascade(Set<Cell> positionsToClear) {
         while (!positionsToClear.isEmpty()) {
@@ -350,27 +188,7 @@ public class minesweeper extends JFrame {
         }
     }
 
-    private void checkForWin() {
-        boolean won = true;
-        outer:
-        for (Cell[] cellRow : cells) {
-            for (Cell cell : cellRow) {
-                if (!cell.isAMine() && cell.isEnabled()) {
-                    won = false;
-                    break outer;
-                }
-            }
-        }
-
-        if (won) {
-            JOptionPane.showMessageDialog(
-                    frame, "You have won!", "Congratulations",
-                    JOptionPane.INFORMATION_MESSAGE
-            );
-        }
-    }
-
-    private static void run(final int gridSize) {
+    private void run(final int gridSize) {
         try {
             // Totally optional. But this applies the look and
             // feel for the current OS to the a application,
@@ -378,11 +196,15 @@ public class minesweeper extends JFrame {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ignore) { }
         // Launch the program
-        new minesweeper(gridSize);
+        this.gridSize = gridSize;
+        cells = new Cell[gridSize][gridSize];
+        view newView = new view();
+        newView.runview(gridSize);
     }
 
     public static void main(String[] args) {
         final int gridSize = 10;
-        SwingUtilities.invokeLater(() -> minesweeper.run(gridSize));
+        minesweeper runVar = new minesweeper();
+        SwingUtilities.invokeLater(() -> runVar.run(gridSize));
     }
 }
