@@ -12,14 +12,13 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
 
 
-public class Cell extends JButton {
+public class controller extends JButton {
     minesweeper model = new minesweeper();
         private final int row;
         private final int col;
         private       int value;
 
-        Cell(final int row, final int col,
-             final ActionListener actionListener) {
+        constructor controller(final int row, final int col, final ActionListener actionListener) {
             this.row = row;
             this.col = col;
             addActionListener(actionListener);
@@ -52,7 +51,7 @@ public class Cell extends JButton {
 
         void updateNeighbourCount() {
             getNeighbours(model.reusableStorage);
-            for (Cell neighbour : model.reusableStorage) {
+            for (cell neighbour : model.reusableStorage) {
                 if (neighbour == null) {
                     break;
                 }
@@ -62,7 +61,7 @@ public class Cell extends JButton {
             }
         }
 
-        void getNeighbours(final Cell[] container) {
+        void getNeighbours(final cell[] container) {
             // Empty all elements first
             for (int i = 0; i < model.reusableStorage.length; i++) {
                 model.reusableStorage[i] = null;
@@ -94,9 +93,9 @@ public class Cell extends JButton {
             if (this == obj) return true;
             if (obj == null || getClass() != obj.getClass())
                 return false;
-            Cell cell = (Cell) obj;
-            return row == cell.row &&
-                   col == cell.col;
+            cell newcell = (cell) obj;
+            return row == newcell.row &&
+                   col == newcell.col;
         }
 
         @Override

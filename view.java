@@ -49,7 +49,7 @@ public class view extends JFrame {
         grid.setLayout(new GridLayout(gridSize, gridSize));
             for (int row = 0; row < gridSize; row++) {
                 for (int col = 0; col < gridSize; col++) {
-                    model.cells[row][col] = new Cell(row, col, model.actionListener);
+                    model.cells[row][col] = new Cell(row, col, actionListener);
                     grid.add(model.cells[row][col]);
                     model.cells[row][col].setBackground(bg);
                 }
@@ -62,6 +62,8 @@ public class view extends JFrame {
             Object source = actionEvent.getSource();
             if (source == reset) {
                 model.reset();
+            } else {
+                model.handleCell((Cell) source);
             }
         };
         

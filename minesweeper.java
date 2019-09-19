@@ -54,10 +54,7 @@ public class minesweeper extends JFrame {
           }
        });*/
     
-    public final ActionListener actionListener = actionEvent -> {
-        Object source = actionEvent.getSource();
-        handleCell((Cell) source);
-    };
+    
     
     public void reset() {
         createMines();
@@ -65,13 +62,14 @@ public class minesweeper extends JFrame {
     }
 
     
-    
+    /*
     public final ActionListener mineReset(int n)  {
         POPULATION_CONSTANT = n;
         mineNum = 0;
         createMines();
         return null;
     };
+    */
 
     private void resetAllCells() {
         for (int row = 0; row < gridSize; row++) {
@@ -116,12 +114,12 @@ public class minesweeper extends JFrame {
         }
     }
 
-   private void handleCell(Cell cell) {
+   public void handleCell(Cell cell) {
       if (cell.isAMine()) {
          cell.setForeground(Color.RED);
          cell.reveal();
-         view gameOverVar = new view();
-         gameOverVar.gameOver("Game Over");
+         view viewVar = new view();
+         viewVar.gameOver("Game Over");
          return;
       }
       if (cell.getValue() == 0) {
@@ -147,11 +145,11 @@ public class minesweeper extends JFrame {
         }
 
         if (won) {
-            view winVar = new view();
-            winVar.win();
+            view viewVar = new view();
+            viewVar.win();
         }
      }
-     
+     /*
        public void revealBoardAndDisplay(String message) {
         mineNum = 0;
         for (int row = 0; row < gridSize; row++) {
@@ -159,10 +157,10 @@ public class minesweeper extends JFrame {
                 cells[row][col].reveal();
             }
         }
-        view gameOverVar = new view();
-        gameOverVar.gameOver(message);
+        view.gameOver();
         createMines();
     }
+    */
 
 
     private void cascade(Set<Cell> positionsToClear) {
@@ -198,8 +196,8 @@ public class minesweeper extends JFrame {
         // Launch the program
         this.gridSize = gridSize;
         cells = new Cell[gridSize][gridSize];
-        view newView = new view();
-        newView.runview(gridSize);
+        view viewVar = new view();
+        viewVar.runview(gridSize);
     }
 
     public static void main(String[] args) {
