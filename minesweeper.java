@@ -10,66 +10,29 @@ import java.awt.event.ActionListener;
 import java.util.*;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
-import javax.swing.Timer;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class minesweeper extends JFrame {
-//implements MouseListener {
-   
-   //public void mousePressed(MouseEvent e){}
-   //public void mouseEntered(MouseEvent e){}
-   //public void mouseExited(MouseEvent e){}
-   //public void mouseReleased(MouseEvent e){}
-   
-    // The value assigned to cells marked as mines. 10 works
-    // because no cell will have more than 8 neighbouring mines.
+
+   //assigned value of mine tiles
     public static final int MINE = 10;
 
-    // The number of mines at generated is the grid size * this constant
+    //number of mines = gridSize = POPULATION_CONSTANT
     private static double POPULATION_CONSTANT = 2;
+    //x and y value of tiles in grid
+    public int gridSize = 10;
 
-    // This fixed amount of memory is to avoid repeatedly declaring
-    // new arrays every time a cell's neighbours are to be retrieved.
+    //fixed memory for Cell array
     public Cell[] reusableStorage = new Cell[8];
     
     static Cell[][] cells;
-    
-    public int gridSize = 10;
 
     
     public int mineNum;
-    
-    //Timer timer = new Timer();
-    //timer.setInitialDelay(pause);
-    //timer.start(); 
-    
-    /*javax.swing.Timer t = new javax.swing.Timer(1000, new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-            String seconds = t.format("mmss");
-            clock.setText(String.valueOf(seconds));
-              //clock.setText(String.valueOf(t));
-          }
-       });*/
-    
-    
     
     public void reset() {
         createMines();
             mineNum = 0;
     }
-
-    
-    /*
-    public final ActionListener mineReset(int n)  {
-        POPULATION_CONSTANT = n;
-        mineNum = 0;
-        createMines();
-        return null;
-    };
-    */
 
     private void resetAllCells() {
         for (int row = 0; row < gridSize; row++) {
@@ -188,9 +151,6 @@ public class minesweeper extends JFrame {
 
     private void run(final int gridSize) {
         try {
-            // Totally optional. But this applies the look and
-            // feel for the current OS to the a application,
-            // making it look native.
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ignore) { }
         // Launch the program

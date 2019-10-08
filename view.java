@@ -52,6 +52,7 @@ public class view extends JFrame {
                     model.cells[row][col] = new Cell(row, col, actionListener);
                     grid.add(model.cells[row][col]);
                     model.cells[row][col].setBackground(bg);
+                    model.cells[row][col].setForeground(Color.ORANGE);
                 }
             }
             model.createMines();
